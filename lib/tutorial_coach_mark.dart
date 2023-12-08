@@ -16,12 +16,13 @@ export 'package:tutorial_coach_mark/src/util.dart';
 class TutorialCoachMark {
   final List<TargetFocus> targets;
   final FutureOr<void> Function(TargetFocus)? onClickTarget;
-  final FutureOr<void> Function(TargetFocus, TapDownDetails)?
-      onClickTargetWithTapPosition;
+  final FutureOr<void> Function(TargetFocus, TapDownDetails)? onClickTargetWithTapPosition;
   final FutureOr<void> Function(TargetFocus)? onClickOverlay;
   final Function()? onFinish;
   final double paddingFocus;
   final Function()? onSkip;
+  final Function()? onNext;
+  final Function()? onPrevious;
   final AlignmentGeometry alignSkip;
   final String textSkip;
   final TextStyle textStyleSkip;
@@ -48,6 +49,8 @@ class TutorialCoachMark {
     this.onFinish,
     this.paddingFocus = 10,
     this.onSkip,
+    this.onNext,
+    this.onPrevious,
     this.alignSkip = Alignment.bottomRight,
     this.textSkip = "SKIP",
     this.textStyleSkip = const TextStyle(color: Colors.white),
@@ -73,6 +76,8 @@ class TutorialCoachMark {
           clickOverlay: onClickOverlay,
           paddingFocus: paddingFocus,
           onClickSkip: skip,
+          onClickNext: next,
+          onClickPrevious: previous,
           alignSkip: alignSkip,
           skipWidget: skipWidget,
           textSkip: textSkip,
@@ -142,9 +147,15 @@ class TutorialCoachMark {
 
   bool get isShowing => _overlayEntry != null;
 
-  void next() => _widgetKey.currentState?.next();
+  void next() {
+    onNext?.call();
+    _widgetKey.currentState?.next();
+  }
 
-  void previous() => _widgetKey.currentState?.previous();
+  void previous() {
+    onPrevious?.call();
+    _widgetKey.currentState?.previous();
+  }
 
   void _removeOverlay() {
     _overlayEntry?.remove();
